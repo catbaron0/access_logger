@@ -23,9 +23,9 @@ qqwry = QQwry()
 qqwry.load_file(str(QQWRY_DB))
 
 def query_ip(ip: str) -> QueryResult:
-    country: str | None = None
-    city: str | None = None
-    provider: str | None = None
+    country: str = ""
+    city: str = ""
+    provider: str | None  = None
 
     result = qqwry.lookup(ip)
     if result:
@@ -34,13 +34,16 @@ def query_ip(ip: str) -> QueryResult:
         else:
             country = result[0]
         provider = result[1]
-    else:
-        try:
-            response = geo.city(ip)
-        except geoip2.errors.AddressNotFoundError:
-            return QueryResult(None, None, None)
-        country = response.country.name
-        city= response.city.name
+    try:
+        response = geo.city(ip)
+        _country = response.country.name
+        _city = response.city.name
+        if _country:
+            country += " | " + _country
+        if _city:
+            city += " | " + _city
+    except geoip2.errors.AddressNotFoundError:
+        pass
     if country:
         country = country.strip()
     if city:
