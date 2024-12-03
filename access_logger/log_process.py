@@ -38,7 +38,6 @@ def process_log_row(row: str):
 
     loc = query_ip(ip)
     database.create_tables([Access], safe=True)
-    print(loc)
     Access.create(
         datetime=dt,
         ip = ip,
